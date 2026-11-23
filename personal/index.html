@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="zh-CN"><head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#123c36"><title>个人改道模拟 · DISC 5103</title>
+  <link rel="stylesheet" href="./style.css">
+  <script defer src="./floor-offline.js"></script><script defer src="./routing.js"></script><script defer src="./map.js"></script><script defer src="./app.js"></script>
+</head><body><main>
+  <header><p class="kicker">DISC 5103　/　GROUP 4</p><h1>个人改道模拟</h1>
+    <p class="sub">独立虚构楼层 · 18 间教室 · 2 个室外出口</p>
+    <a class="local-entry" href="../index.html">返回 LSK 两房试点</a></header>
+  <p id="error" role="alert" hidden></p>
+  <div id="work" class="layout" aria-busy="true">
+    <section class="start-card">
+      <label for="room">起点房间</label>
+      <select id="room"><option value="">选择一间教室</option></select>
+      <div class="reading" aria-live="polite">
+        <h2 id="dest">先选起点查看最近出口</h2>
+        <p class="metric"><b id="distance">—</b><span id="units"></span></p>
+        <p id="change"></p><p id="baseline" class="note"></p><p id="ties" class="note"></p>
+      </div>
+    </section>
+    <section class="map-card">
+      <div class="map-head"><h2>教学层平面</h2>
+        <div class="seg" role="group" aria-label="楼层视图"><button id="v2" aria-pressed="true">2D</button><button id="v3" aria-pressed="false">3D</button></div></div>
+      <div class="map-window" id="viewport"><canvas id="floor-map" role="img" aria-label="虚构楼层图"></canvas></div>
+      <div class="tools"><span class="legend"><i class="key-line"></i>路线 <i class="key-door"></i>门 <i class="key-block"></i>堵塞</span>
+        <div class="tool-btns"><button id="zoom" title="切换放大或全图">放大</button><button id="rotate" hidden>旋转</button></div></div>
+      <p id="maphelp" class="note">可在图上点选教室。</p>
+    </section>
+    <section class="edit-card">
+      <div class="edit-head"><h2>模拟堵塞</h2><button id="restore" disabled>全部恢复</button></div>
+      <label for="element">图上点选或从列表选择</label>
+      <div class="controls"><select id="element" disabled><option value="">选择门、走廊或出口</option></select>
+        <button id="toggle" class="primary" disabled>设为不可通行</button></div>
+      <p id="action-status" class="note" aria-live="polite">先选起点房间。</p>
+      <div id="chips" aria-label="已设为不可通行的地点"></div>
+    </section>
+  </div>
+  <footer>模拟设置仅对当前页面生效。刷新页面可重置。
+  </footer>
+  <noscript>请启用 JavaScript 以计算个人路线。</noscript>
+</main></body></html>
