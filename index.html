@@ -13,20 +13,36 @@
 @media(max-width:760px){.wrap{width:calc(100% - 24px)}.mast{min-height:44px}.page-intro{gap:12px;margin:17px 0 13px}.floor-sign{min-width:51px;font-size:1.7rem}.page-intro p{font-size:.89rem}.room-control{display:block;padding:8px 0 10px}.room-control>span{display:block;font-size:.84rem;margin-bottom:5px}.room-control [role=group]{gap:5px}.room-control button{gap:4px;padding:5px 8px}.room-control button strong{font-size:1rem}.room-control button small{font-size:.76rem}.sheet{grid-template-columns:minmax(0,1fr)}.drawing{border-right:0}.drawing-head{min-height:44px;padding:0 8px}.map-stage{height:clamp(245px,66vw,380px)}.map-key{gap:5px 11px;padding:5px 10px;min-height:32px;font-size:.79rem}.board-head{min-height:35px;padding:6px 12px}.board-head h2{font-size:.95rem}.board-body{padding:11px 12px;display:grid;grid-template-columns:1fr minmax(0,1.13fr);gap:0 12px;align-items:start}.route-mode{grid-column:1;font-size:.83rem}.distance{grid-column:1;margin:2px 0 5px}.distance strong{font-size:2.6rem}.route-stops{grid-column:2;grid-row:1 / span 2}.route-stops>div:first-child{padding-bottom:4px}.route-stops small,.route-stops b{display:inline}.route-stops small{margin-right:4px}.route-stops b{font-size:.88rem}.route-stops>div{gap:6px}.route-status{grid-column:1/-1;margin-top:5px}.board-tools{padding:8px 12px}.related{align-items:flex-start;padding:13px 0}.related span{font-size:.81rem}footer{display:block}footer span{display:block}.board-help{font-size:.85rem}}
 @media(max-width:390px){.room-control button{display:grid;line-height:1.15;gap:1px}.mast-credit{font-size:.76rem}.distance strong{font-size:2.3rem}}
 details{margin-top:8px;color:var(--muted);font-size:.87rem}summary{cursor:pointer;min-height:32px;display:list-item;padding-top:5px}details[open] summary{margin-bottom:5px}#floor-range-tools label{display:block;margin-bottom:5px}#floor-range-tools input{width:100%;accent-color:var(--teal);margin:5px 0 9px}.map-tools button:disabled,.board-tools button:disabled{cursor:default;opacity:.45}.option-list{margin-bottom:8px}.option-list button{font-size:.9rem;min-height:44px}
+.map-tools #floor-focus,.map-tools #floor-fit{font-size:.85rem;font-weight:650;padding-inline:9px;white-space:nowrap}
+.map-tools button,.room-control button,.board-tools button{touch-action:manipulation}
+.map-gesture{padding:6px 16px 9px;color:var(--muted);font-size:.8rem}
+#floor-stage{height:clamp(455px,67vh,760px)}
+#floor-svg{touch-action:none}
+@media(max-width:760px){
+  #floor-stage{height:clamp(355px,57svh,565px)}
+  .map-gesture{padding:4px 10px 7px;font-size:.75rem}
+  .drawing-head h2{white-space:nowrap}
+}
+@media(max-width:380px){
+  .drawing-head .small-symbol{display:none}
+  .drawing-head h2{font-size:.9rem}
+  .map-tools #floor-focus,.map-tools #floor-fit{padding-inline:4px}
+}
 </style></head><body>
 <header class="site-head"><div class="wrap mast"><a class="identity" href="#map-title"><span class="identity-mark" aria-hidden="true"></span>LSK 路线图</a>
 <span class="mast-credit">DISC 5103 <b>/</b> Group 4</span></div></header>
 <main class="wrap"><div class="page-intro">
 <div class="floor-sign" aria-label="Ground floor">GF</div>
-<div><h1 id="map-title">地面层步行路线</h1><p>选择起点房间，在实际平面图上查看路线。</p></div>
+<div><h1 id="map-title">地面层步行路线</h1><p>三个起点在同一张图上。点房号，放大查看这条路线。</p></div>
 </div>
 <div class="room-control"><span id="choose-room-label">起点房间</span><div id="case-rooms" role="group" aria-labelledby="choose-room-label"></div></div>
-<section id="floor" class="sheet" aria-label="平面图和路线信息" hidden>
+<section id="floor" class="sheet" aria-label="平面图和路线信息">
   <div class="drawing">
     <div class="drawing-head"><div><span class="small-symbol" aria-hidden="true"></span><h2>地面层平面图</h2></div>
-      <div class="map-tools" role="group" aria-label="地图缩放"><button id="floor-minus" aria-label="缩小地图">−</button><button id="floor-plus" aria-label="放大地图">＋</button><button id="floor-fit">全图</button></div></div>
-    <div id="floor-stage" class="map-stage"><svg id="floor-svg" role="group" aria-label="可点选的实际局部平面与步行路线"></svg></div>
+      <div class="map-tools" role="group" aria-label="地图缩放"><button id="floor-minus" aria-label="缩小地图">−</button><button id="floor-plus" aria-label="放大地图">＋</button><button id="floor-focus">看路线</button><button id="floor-fit">全图</button></div></div>
+    <div id="floor-stage" class="map-stage"><svg id="floor-svg" role="group" aria-label="G041、G042、G005 同层地图，点房号选择起点"></svg></div>
     <div class="map-key"><span><i class="origin-swatch"></i>起点房间</span><span><i class="floor-key-line"></i>当前路线</span><span><i class="end-swatch"></i>终点</span><span id="floor-scale" class="scale" aria-hidden="true" hidden>5 m</span></div>
+    <p class="map-gesture">双指或滚轮可局部放大，放大后拖动地图。「全图」可回到三个起点。</p>
   </div>
   <div class="route-board">
     <div class="board-head"><span class="route-icon" aria-hidden="true"></span><h2>路线信息</h2></div>
@@ -35,29 +51,12 @@ details{margin-top:8px;color:var(--muted);font-size:.87rem}summary{cursor:pointe
       <div class="route-stops"><div><i></i><div><small>起点</small><b id="floor-start"></b></div></div><div><i></i><div><small>终点</small><b id="floor-end"></b></div></div></div>
       <p id="floor-title" class="visually-hidden"></p><p id="floor-status" class="route-status"></p>
     </div>
-    <div class="board-tools"><p class="board-help" id="floor-hint">点选彩色路线或出口可标记不通。</p>
+    <div id="discussion-actions" class="board-tools"><p class="board-help" id="floor-hint">点选彩色路线或出口可标记不通。</p>
 <button id="floor-exit">模拟当前出口暂时不通</button><button id="floor-reset" hidden>解除标记</button>
 <details id="floor-access"><summary>按路线位置标记</summary><div id="floor-rooms" hidden></div><div id="floor-range-tools">
 <label for="floor-range">沿路线的位置 <output id="floor-station" for="floor-range"></output></label>
 <input type="range" id="floor-range" value="50" min="0" max="100" step="1"><button id="floor-mark">将此处标为不通</button>
-</div></details></div>
-  </div>
-</section>
-<section id="variant" class="sheet" aria-label="平面图和路线信息" hidden>
-  <div class="drawing">
-    <div class="drawing-head"><div><span class="small-symbol" aria-hidden="true"></span><h2>地面层平面图</h2></div>
-      <div class="map-tools" role="group" aria-label="地图缩放"><button id="variant-minus" aria-label="缩小地图">−</button><button id="variant-plus" aria-label="放大地图">＋</button><button id="variant-fit">全图</button></div></div>
-    <div id="variant-stage" class="map-stage"><svg id="variant-svg" role="group" aria-label="可点选的实际局部平面与步行路线"></svg></div>
-    <div class="map-key"><span><i class="origin-swatch"></i>起点房间</span><span><i class="floor-key-line"></i>当前路线</span><span><i class="end-swatch"></i>终点</span><span id="variant-scale" class="scale" aria-hidden="true" hidden>5 m</span></div>
-  </div>
-  <div class="route-board">
-    <div class="board-head"><span class="route-icon" aria-hidden="true"></span><h2>路线信息</h2></div>
-    <div class="board-body" aria-live="polite">
-      <p class="route-mode" id="variant-mode"></p><div class="distance"><strong id="variant-distance">—</strong><span>m</span></div>
-      <div class="route-stops"><div><i></i><div><small>起点</small><b id="variant-start"></b></div></div><div><i></i><div><small>终点</small><b id="variant-end"></b></div></div></div>
-      <p id="variant-title" class="visually-hidden"></p><p id="variant-status" class="route-status"></p>
-    </div>
-    <div class="board-tools"><div id="variant-options" class="option-list" role="group" aria-label="房门方案"></div>
+</div></details></div><div id="studio-actions" class="board-tools" hidden><div id="variant-options" class="option-list" role="group" aria-label="房门方案"></div>
 <p id="variant-hint" class="board-help"></p>
 <button id="variant-toggle-door">模拟当前房门暂时不通</button><button id="variant-reset" hidden>解除房门标记</button></div>
   </div>
@@ -136,6 +135,18 @@ details{margin-top:8px;color:var(--muted);font-size:.87rem}summary{cursor:pointe
     const length=line.slice(1).reduce((d,p,i)=>d+gap(line[i],p),0);
     return {...route,xy_m:line,distance_m:length,local_detour:true};
   }
+  function choose(map, room, block = null) {
+    const label = typeof room === "string" ? room : room?.room_label;
+    const area = map?.rooms.find(candidate => candidate.room_label === label);
+    if (!area) return null;
+    const byDistance = (a,b) => a.distance_m - b.distance_m;
+    const routes = map.routes.filter(route => route.room_label === label).sort(byDistance);
+    if (!block) return routes[0] || null;
+    const options = routes.map(route => allowed(route, block)
+      ? route : roomDetour(route, block, map.room_walks?.[label], area.polygon_m));
+    return options.filter(Boolean).sort(byDistance)[0] || null;
+  }
+  window.pilotWalk = {choose, closest, along, radius};
   function svgNode(tag,attrs={},text) {
     const n=document.createElementNS(ns,tag);
     Object.entries(attrs).forEach(([k,v])=>n.setAttribute(k,String(v)));
@@ -172,18 +183,13 @@ details{margin-top:8px;color:var(--muted);font-size:.87rem}summary{cursor:pointe
     const panel=$("floor"),svg=$("floor-svg");
     let map=null,rooms=[],room=null,outside=null,active=null,block=null,zoom=1,pan=[0,0],drag=null,ignoreClick=false;
     let transform=null;
-    function baseRoutes() {
-      return room ? map.routes.filter(r=>r.room_label===room.room_label).slice().sort((a,b)=>a.distance_m-b.distance_m) : [];
-    }
     function label(route) {
       const item=room.endpoint_id===route.endpoint_id?room:room.alternate;
       return item.endpoint_label || item.endpoint_id;
     }
     function sync(next) {
       block=next;
-      const area=map.rooms.find(r=>r.room_label===room?.room_label);
-      const available=baseRoutes().map(r=>allowed(r,block)?r:roomDetour(r,block,map.room_walks?.[room.room_label],area.polygon_m));
-      active=available.filter(Boolean).sort((a,b)=>a.distance_m-b.distance_m)[0] || null;
+      active=choose(map,room,block);
       onChange({blocked:Boolean(block),route:active,unknown:!!room&&!active,alternate:!!active&&active.endpoint_id!==room.endpoint_id});
       draw();
     }
@@ -191,7 +197,7 @@ details{margin-top:8px;color:var(--muted);font-size:.87rem}summary{cursor:pointe
       if(room?.room_label!==ref?.room_label){zoom=1;pan=[0,0];}
       room=map && ref && map.rooms.some(r=>r.room_label===ref.room_label) ? ref : null;
       outside=ref&&!room?ref:null;
-      block=null;active=room?baseRoutes()[0]:null;
+      block=null;active=choose(map,room);
       $("floor-range").value=50;
       draw();
     }
@@ -263,7 +269,7 @@ details{margin-top:8px;color:var(--muted);font-size:.87rem}summary{cursor:pointe
       }
       const changed=active && (active.local_detour || active.endpoint_id!==room.endpoint_id);
       panel.querySelector(".floor-key-line").style.background=changed?palette.alternate:palette.route;
-      if(changed&&block)addPath(f,baseRoutes()[0],null,true);
+      if(changed&&block)addPath(f,choose(map,room),null,true);
       if(active)addPath(f,active,changed?palette.alternate:palette.route);
       if(block) {
         const [x,y]=screen(block.xy),g=svgNode("g",{"data-closure":block.kind,"pointer-events":"none"});
@@ -320,153 +326,473 @@ details{margin-top:8px;color:var(--muted);font-size:.87rem}summary{cursor:pointe
 })();
 </script><script>(() => {
   "use strict";
-  const data = JSON.parse(document.getElementById("embedded").textContent);
-  const $ = id => document.getElementById(id);
-  const buttons = new Map();
-  const extra = data.additional_case;
-  let selected;
-  const base = window.createPilotPlan(selectRoom, state => writeBaseResult(state.route, state.blocked));
-  const comparison = extra ? createDoorComparison(extra) : null;
 
-  function writeBaseResult(route, blocked) {
-    const item = route?.endpoint_id === selected.alternate.endpoint_id ? selected.alternate : selected;
-    $("floor-mode").textContent = blocked ? "标记后的模型步行距离" : "较短方案 · 模型步行距离";
-    $("floor-distance").textContent = route ? route.distance_m.toFixed(2) : "—";
-    $("floor-start").textContent = selected.room_label;
-    $("floor-end").textContent = route ? item.endpoint_label : "暂无已核绕行";
-    $("floor-exit").hidden = blocked || !route;
-  }
-  function selectRoom(label) {
-    selected = data.rooms.find(r => r.room_label === label) || extra;
-    const independent = selected === extra;
-    for (const [key, button] of buttons) button.setAttribute("aria-pressed", String(key === label));
-    $("floor").hidden = independent;
-    if (comparison) $("variant").hidden = !independent;
-    if (independent) { comparison.reset(); return; }
-    base.setRoom(selected);
-    writeBaseResult(selected, false);
-  }
-  function register(room, name) {
-    const button = document.createElement("button");
-    button.type = "button"; button.dataset.caseRoom = room.room_label;
-    const id = document.createElement("strong"), usage = document.createElement("small");
-    id.textContent = room.room_label; usage.textContent = name;
-    button.append(id, usage);
-    button.addEventListener("click", () => selectRoom(room.room_label));
-    buttons.set(room.room_label, button);
-    $("case-rooms").append(button);
-  }
-  for (const room of data.rooms) register(room, "讨论室");
-  if (extra) register(extra, extra.room_name);
-  $("floor-exit").addEventListener("click", () => base.markExit());
-  base.load(data);
-  selectRoom(data.rooms[0].room_label);
-
-  function createDoorComparison(c) {
-    const svg = $("variant-svg"), ns = "http://www.w3.org/2000/svg";
-    const routes = c.routes.slice().sort((a,b)=>a.distance_m-b.distance_m);
-    let route = routes[0], closed = null, zoom = 1, pan = [0,0], drag = null, moved = false;
-    const routeButtons = new Map();
-    function element(tag, attrs, text) {
-      const item=document.createElementNS(ns,tag);
-      for (const [key,val] of Object.entries(attrs)) item.setAttribute(key,String(val));
-      if (text !== undefined) item.textContent=text;
-      return item;
-    }
-    function draw() {
-      const w=svg.clientWidth, h=svg.clientHeight;
-      if (!w || !h || $("variant").hidden) return;
-      const [x0,y0,x1,y1]=c.bounds_m;
-      const scale=Math.min((w-26)/(x1-x0),(h-26)/(y1-y0))*zoom;
-      const point=([x,y])=>[w/2+pan[0]+(x-(x0+x1)/2)*scale,h/2+pan[1]-(y-(y0+y1)/2)*scale];
-      const points=line=>line.map(point).map(p=>p.join(",")).join(" ");
-      const [bx,by]=point([x0,y1]);
-      svg.setAttribute("viewBox",`0 0 ${w} ${h}`);
-      svg.style.touchAction=zoom>1?"none":"pan-y";
-      const nodes=document.createDocumentFragment();
-      nodes.append(element("image",{href:c.image,x:bx,y:by,width:(x1-x0)*scale,height:(y1-y0)*scale,preserveAspectRatio:"none"}));
-      nodes.append(element("polygon",{points:points(c.polygon_m),fill:"#a9d9c9","fill-opacity":.49,stroke:"#196c64","stroke-width":1.8}));
-      if (closed) nodes.append(element("polyline",{points:points(closed.xy_m),fill:"none",stroke:"#697784","stroke-dasharray":"5 5","stroke-width":2.6}));
-      const colour=closed?"#2459a4":"#00786c";
-      const line={points:points(route.xy_m),fill:"none","stroke-linecap":"round","stroke-linejoin":"round"};
-      nodes.append(element("polyline",{...line,stroke:"white","stroke-width":7.5}),element("polyline",{...line,stroke:colour,"stroke-width":4.2,"data-active-path":route.id}));
-      const [sx,sy]=point(c.origin_m),[ex,ey]=point(route.xy_m.at(-1));
-      nodes.append(element("circle",{cx:sx,cy:sy,r:5.5,fill:colour,stroke:"white","stroke-width":2}),element("rect",{x:ex-6,y:ey-6,width:12,height:12,fill:colour,stroke:"white","stroke-width":2}));
-      const labelWidth=43, labelHeight=19;
-      const labelX=Math.max(1, Math.min(w-labelWidth-1,sx-labelWidth/2)), labelY=Math.max(1, sy-labelHeight-7);
-      nodes.append(element("rect",{x:labelX,y:labelY,width:labelWidth,height:labelHeight,rx:3,fill:"#163854"}),element("text",{x:labelX+labelWidth/2,y:labelY+labelHeight/2,class:"floor-chip"},c.room_label));
-      const activeDoor=point(route.room_door_xy_m);
-      function doorLabel(at, text, above, contrast) {
-        const width=Math.max(44,text.length*11+12), height=17;
-        const outside=at[0]<sx?at[0]-width-10:at[0]+10;
-        const x=Math.max(2,Math.min(w-width-2,outside));
-        const y=Math.max(2,Math.min(h-height-2,at[1]+(above?-20:5)));
-        nodes.append(element("rect",{x,y,width,height,rx:3,fill:"white",stroke:contrast,"stroke-width":1,"pointer-events":"none"}),
-          element("text",{x:x+width/2,y:y+height/2,fill:contrast,"text-anchor":"middle","dominant-baseline":"central","font-size":11,"font-weight":650,"pointer-events":"none"},text));
-      }
-      const mark=closed ? point(closed.room_door_xy_m) : activeDoor;
-      const [dx,dy]=mark;
-      if (closed) nodes.append(element("circle",{cx:activeDoor[0],cy:activeDoor[1],r:6.5,fill:colour,stroke:"white","stroke-width":2,"data-active-room-door":route.id}));
-      doorLabel(activeDoor,route.variant_label,true,colour);
-      if (closed) doorLabel(mark,closed.variant_label,false,"#a63c31");
-      const door=element("g",{role:"button",tabindex:"0","data-room-door":closed?.id??route.id,"aria-label":closed?"解除房门标记":"模拟当前房门暂时不通"});
-      door.append(element("circle",{cx:dx,cy:dy,r:22,fill:"transparent"}),element("circle",{cx:dx,cy:dy,r:8,stroke:closed?"#a63c31":"#163854","stroke-width":2,fill:closed?"#a63c31":"#e9b052"}));
-      if(closed) door.append(element("path",{d:`M ${dx-3} ${dy-3} l 6 6 m -6 0 l 6 -6`,stroke:"white","stroke-width":1.8}));
-      else door.append(element("path",{d:`M ${dx-3} ${dy+4} v -7 h 5 v 7`,fill:"none",stroke:"#163854","stroke-width":1.4}));
-      door.addEventListener("click",()=>{if (!moved) toggleDoor();});
-      door.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();toggleDoor();}});
-      nodes.append(door);svg.replaceChildren(nodes);
-      const metres=5*scale>w*.25?2:5;
-      $("variant-scale").style.width=metres*scale+"px";$("variant-scale").textContent=metres+" m";$("variant-scale").hidden=false;
-      $("variant-minus").disabled=zoom<=1;$("variant-plus").disabled=zoom>=3;
-    }
-    function render() {
-      const delta=route.distance_m-routes[0].distance_m;
-      $("variant-mode").textContent=closed?"房门切换后的模型距离":"所选方案 · 模型步行距离";
-      $("variant-distance").textContent=route.distance_m.toFixed(2);
-      $("variant-start").textContent=c.room_label;$("variant-end").textContent=route.endpoint_label;
-      $("variant-title").textContent=c.room_label+" → "+route.endpoint_label+" · "+route.distance_m.toFixed(2)+" m";
-      const change=closed?route.distance_m-closed.distance_m:delta;
-      const comparison=closed?"到达同一门厅，较标记前"+(change<0?"缩短 ":"增加 ")+Math.abs(change).toFixed(2)+" m。":
-        delta>.005?"比另一方案长 "+delta.toFixed(2)+" m。":"这是两条已核方案中较短的一条。";
-      $("variant-mode").textContent=closed?"标记后的模型步行距离":"所选方案 · 模型步行距离";
-      $("variant-hint").textContent=closed?"红色叉号是已标记的房门，蓝线经过另一樘房门。点叉号或下方按钮可恢复。":"点图上的黄色房门可模拟暂时不通，比较另一樘房门的走法。";
-      $("variant-status").textContent=(closed?"已将「"+closed.variant_label+"」标为暂时不通。":"")+"当前选择「"+route.variant_label+"」。"+comparison;
-      $("variant-reset").hidden=!closed;$("variant-toggle-door").hidden=Boolean(closed);
-      for (const item of routes) {
-        const button=routeButtons.get(item.id);
-        button.setAttribute("aria-pressed",String(item.id===route.id));button.disabled=Boolean(closed && item.id===closed.id);
-      }
-      $("variant").querySelector(".floor-key-line").style.background=closed?"#2459a4":"#00786c";
-      draw();
-    }
-    function toggleDoor() {
-      if(closed){restore();return;}
-      closed=route;route=routes.find(item=>item.id!==closed.id);render();
-    }
-    function reset(){closed=null;route=routes[0];zoom=1;pan=[0,0];render();}
-    function restore(){route=closed || routes[0];closed=null;render();}
-    function resize(value) {
-      const previous=zoom;zoom=Math.max(1,Math.min(3,value));
-      pan=zoom===1?[0,0]:pan.map(i=>i*(zoom/previous));draw();
-    }
-    for(const item of routes){
-      const button=document.createElement("button");button.type="button";button.textContent=item.variant_label;
-      button.dataset.variant=item.id;button.onclick=()=>{route=item;render();};routeButtons.set(item.id,button);$("variant-options").append(button);
-    }
-    $("variant-toggle-door").onclick=toggleDoor;$("variant-reset").onclick=restore;
-    $("variant-plus").onclick=()=>resize(zoom*1.5);$("variant-minus").onclick=()=>resize(zoom/1.5);$("variant-fit").onclick=()=>resize(1);
-    svg.addEventListener("pointerdown",e=>{moved=false;if(zoom>1&&e.button===0)drag={id:e.pointerId,x:e.clientX,y:e.clientY,pan:pan.slice()};});
-    svg.addEventListener("pointermove",e=>{
-      if(!drag || drag.id!==e.pointerId)return;const x=e.clientX-drag.x,y=e.clientY-drag.y;
-      if(!moved && Math.hypot(x,y)<5)return;moved=true;svg.setPointerCapture(e.pointerId);
-      const clamp=(n,limit)=>Math.max(-limit,Math.min(n,limit));
-      pan=[clamp(drag.pan[0]+x,svg.clientWidth*(zoom-.5)/2),clamp(drag.pan[1]+y,svg.clientHeight*(zoom-.5)/2)];draw();
+  window.createAtlasCamera = function createAtlasCamera(svg, plans, onChange) {
+    const ns = "http://www.w3.org/2000/svg";
+    const bounds = [
+      Math.min(...plans.map(p => p.bounds_m[0])),
+      Math.min(...plans.map(p => p.bounds_m[1])),
+      Math.max(...plans.map(p => p.bounds_m[2])),
+      Math.max(...plans.map(p => p.bounds_m[3])),
+    ];
+    const midpoint = box => [(box[0] + box[2]) / 2, (box[1] + box[3]) / 2];
+    const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
+    const maxZoom = 10;
+    const home = midpoint(bounds);
+    const widthM = bounds[2] - bounds[0], heightM = bounds[3] - bounds[1];
+    let centre = home.slice(), zoom = 1;
+    const images = plans.map((plan, index) => {
+      const img = document.createElementNS(ns, "image");
+      img.setAttribute("href", plan.image);
+      img.setAttribute("preserveAspectRatio", "none");
+      img.setAttribute("pointer-events", "none");
+      img.setAttribute("aria-hidden", "true");
+      img.setAttribute("data-atlas-crop", String(index));
+      return img;
     });
-    svg.addEventListener("pointerup",()=>{drag=null;setTimeout(()=>{moved=false;},0);});
-    svg.addEventListener("pointercancel",()=>{drag=null;moved=false;});
-    new ResizeObserver(draw).observe(svg);
-    return {reset};
+
+    function frame() {
+      const width = svg.clientWidth, height = svg.clientHeight;
+      const padding = Math.min(23, width * 0.055, height * 0.07);
+      const fitScale = Math.max(0.001, Math.min((width - padding * 2) / widthM, (height - padding * 2) / heightM));
+      const scale = fitScale * zoom;
+      const [cx, cy] = centre;
+      const project = ([x, y]) => [width / 2 + (x - cx) * scale, height / 2 - (y - cy) * scale];
+      const unproject = ([x, y]) => [cx + (x - width / 2) / scale, cy - (y - height / 2) / scale];
+      return {
+        width, height, scale, fitScale, padding, project, unproject, zoom,
+        canZoomIn: zoom < maxZoom - 0.0001, canZoomOut: zoom > 1.0001,
+        bounds_m: [...unproject([0, height]), ...unproject([width, 0])],
+        worldBounds: bounds.slice(),
+      };
+    }
+
+    function backdrop(view) {
+      const group = document.createDocumentFragment();
+      plans.forEach((plan, index) => {
+        const [left, bottom, right, top] = plan.bounds_m;
+        const [x, y] = view.project([left, top]);
+        const img = images[index];
+        img.setAttribute("x", x);
+        img.setAttribute("y", y);
+        img.setAttribute("width", (right - left) * view.scale);
+        img.setAttribute("height", (top - bottom) * view.scale);
+        group.append(img);
+      });
+      return group;
+    }
+
+    function redraw() {
+      const view = frame();
+      if (!view.width || !view.height) return;
+      const rx = Math.min(widthM / 2, (view.width / 2 - view.padding) / view.scale);
+      const ry = Math.min(heightM / 2, (view.height / 2 - view.padding) / view.scale);
+      centre = zoom <= 1.0001 ? home.slice() : [
+        clamp(centre[0], bounds[0] + rx, bounds[2] - rx),
+        clamp(centre[1], bounds[1] + ry, bounds[3] - ry),
+      ];
+      svg.setAttribute("viewBox", `0 0 ${view.width} ${view.height}`);
+      svg.dataset.zoom = String(zoom);
+      onChange();
+    }
+
+    function fit() {
+      zoom = 1;
+      centre = home.slice();
+      redraw();
+    }
+
+    function focus(box) {
+      const view = frame();
+      if (!view.width || !view.height) return;
+      const boxWidth = Math.max(1, box[2] - box[0]), boxHeight = Math.max(1, box[3] - box[1]);
+      const inset = Math.max(view.padding, Math.min(44, view.width * 0.10, view.height * 0.12));
+      const scale = Math.min((view.width - 2 * inset) / boxWidth, (view.height - 2 * inset) / boxHeight);
+      centre = midpoint(box);
+      zoom = clamp(scale / view.fitScale, 1, maxZoom);
+      redraw();
+    }
+
+    // Keep the same model point under the cursor or pinch midpoint while changing scale.
+    function position(anchor, pixel, level) {
+      zoom = clamp(level, 1, maxZoom);
+      const view = frame();
+      centre = [
+        anchor[0] - (pixel[0] - view.width / 2) / view.scale,
+        anchor[1] + (pixel[1] - view.height / 2) / view.scale,
+      ];
+      redraw();
+    }
+
+    function step(factor) {
+      if (!Number.isFinite(factor) || factor <= 0) return;
+      zoom = clamp(zoom * factor, 1, maxZoom);
+      redraw();
+    }
+
+    function pixel(e) {
+      const box = svg.getBoundingClientRect();
+      return [(e.clientX - box.left) * svg.clientWidth / box.width,
+              (e.clientY - box.top) * svg.clientHeight / box.height];
+    }
+
+    const pointers = new Map();
+    let drag, pinch, moved = false, ignoreClickUntil = 0;
+    function capture(id) {
+      if (svg.isConnected && !svg.hasPointerCapture(id)) svg.setPointerCapture(id);
+    }
+    function pair() {
+      const [a, b] = pointers.values();
+      return {mid: [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2], span: Math.max(1, Math.hypot(a[0] - b[0], a[1] - b[1]))};
+    }
+    function startDrag(at) {
+      drag = {start: at, anchor: frame().unproject(at)};
+      pinch = null;
+    }
+    function startPinch() {
+      const {mid, span} = pair();
+      pinch = {span, zoom, anchor: frame().unproject(mid)};
+      moved = true;
+      for (const id of pointers.keys()) capture(id);
+    }
+    function down(e) {
+      if (e.button !== 0) return;
+      if (!pointers.size) {
+        moved = false;
+        ignoreClickUntil = 0;
+      }
+      const at = pixel(e);
+      pointers.set(e.pointerId, at);
+      if (pointers.size === 1) startDrag(at);
+      if (pointers.size === 2) startPinch();
+    }
+    function move(e) {
+      if (!pointers.has(e.pointerId)) return;
+      const at = pixel(e);
+      pointers.set(e.pointerId, at);
+      if (pointers.size >= 2 && pinch) {
+        const {mid, span} = pair();
+        position(pinch.anchor, mid, pinch.zoom * span / pinch.span);
+      } else if (drag && (moved || Math.hypot(at[0] - drag.start[0], at[1] - drag.start[1]) > 5)) {
+        moved = true;
+        capture(e.pointerId);
+        if (zoom > 1) position(drag.anchor, at, zoom);
+      }
+    }
+    function end(e) {
+      if (!pointers.delete(e.pointerId)) return;
+      if (pointers.size >= 2) startPinch();
+      else if (pointers.size) startDrag(pointers.values().next().value);
+      else {
+        if (moved) ignoreClickUntil = performance.now() + 600;
+        drag = pinch = null;
+        moved = false;
+      }
+    }
+    function guardClick(e) {
+      if (e.detail !== 0 && (moved || performance.now() < ignoreClickUntil)) {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+      }
+    }
+    function wheel(e) {
+      if (!e.deltaY) return;
+      e.preventDefault();
+      const at = pixel(e), view = frame();
+      const unit = e.deltaMode === 1 ? 16 : e.deltaMode === 2 ? view.height : 1;
+      position(view.unproject(at), at, zoom * Math.exp(clamp(-e.deltaY * unit * 0.003, -0.8, 0.8)));
+    }
+    const previousTouchAction = svg.style.touchAction;
+    svg.style.touchAction = "none";
+    svg.dataset.zoom = "1";
+    const aborter = new AbortController();
+    const events = {signal: aborter.signal};
+    svg.addEventListener("pointerdown", down, events);
+    svg.addEventListener("pointermove", move, events);
+    window.addEventListener("pointerup", end, {...events, capture: true});
+    window.addEventListener("pointercancel", end, {...events, capture: true});
+    svg.addEventListener("click", guardClick, {...events, capture: true});
+    svg.addEventListener("wheel", wheel, {...events, passive: false});
+    const observer = new ResizeObserver(redraw);
+    observer.observe(svg);
+    return {frame, backdrop, fit, focus, step, dispose() {
+      aborter.abort();
+      observer.disconnect();
+      svg.style.touchAction = previousTouchAction;
+      pointers.clear();
+    }};
+  };
+})();
+</script><script>(() => {
+  "use strict";
+  const $ = id => document.getElementById(id);
+  const {rooms, pilot_map: plan, additional_case: studio} = JSON.parse($("embedded").textContent);
+  const shapes = [...plan.rooms, studio];
+  const roomById = new Map(shapes.map(room => [room.room_label, room]));
+  const summaries = new Map(rooms.map(room => [room.room_label, room]));
+  const studioRoutes = studio.routes.slice().sort((a, b) => a.distance_m - b.distance_m);
+  const walk = window.pilotWalk;
+  const svg = $("floor-svg");
+  const colors = {route:"#00786c", detour:"#2459a4", stop:"#a63c31", ink:"#163854"};
+  const ns = "http://www.w3.org/2000/svg";
+  const roomButtons = new Map(), doorButtons = new Map();
+  let selected = shapes[0], active = null, original = null, block = null;
+  const camera = window.createAtlasCamera(svg, [plan, studio], draw);
+
+  function svgItem(type, attrs, text) {
+    const el = document.createElementNS(ns, type);
+    for (const [name, value] of Object.entries(attrs)) el.setAttribute(name, value);
+    if (text !== undefined) el.textContent = text;
+    return el;
   }
+  function clickable(el, name, action) {
+    el.setAttribute("role", "button");
+    el.setAttribute("tabindex", "0");
+    el.setAttribute("aria-label", name);
+    el.addEventListener("click", action);
+    el.addEventListener("keydown", event => {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        action(event);
+      }
+    });
+    return el;
+  }
+  const pointList = (line, frame) => line.map(frame.project).map(p => p.join(",")).join(" ");
+  const lengthText = route => route.distance_m.toFixed(2);
+  function endName(route) {
+    if (!route) return "绕行待核";
+    if (selected === studio) return route.endpoint_label;
+    const base = summaries.get(selected.room_label);
+    return route.endpoint_id === base.endpoint_id ? base.endpoint_label : base.alternate.endpoint_label;
+  }
+  function focusRoute() {
+    const points = selected.polygon_m.concat((active || original).xy_m);
+    const xs = points.map(p => p[0]), ys = points.map(p => p[1]);
+    camera.focus([Math.min(...xs)-1, Math.min(...ys)-1, Math.max(...xs)+1, Math.max(...ys)+1]);
+  }
+  function selectRoom(label, focus = true) {
+    const next = roomById.get(label);
+    if (!next) return;
+    if (next !== selected || !original) {
+      selected = next;
+      block = null;
+      original = next === studio ? studioRoutes[0] : walk.choose(plan, next, null);
+      active = original;
+      $("floor-range").value = 50;
+      $("floor-access").open = false;
+    }
+    update();
+    if (focus) focusRoute();
+  }
+  function restore() {
+    block = null;
+    active = original;
+    update();
+  }
+  function mark(proposal) {
+    block = proposal;
+    if (selected === studio) {
+      original = active;
+      active = studioRoutes.find(r => r.id !== original.id);
+    } else {
+      active = walk.choose(plan, selected, block);
+    }
+    update();
+  }
+  function blockExit() {
+    if (active && !block) mark({kind:"door", endpoint_id:active.endpoint_id, xy:active.xy_m.at(-1)});
+  }
+  function markDoor() {
+    if (!block) mark({kind:"roomDoor", xy:active.room_door_xy_m});
+  }
+  function updateStation() {
+    $("floor-station").textContent = active ? (Number($("floor-range").value) * active.distance_m / 100).toFixed(2) + " m" : "";
+  }
+  function routeStatus() {
+    if (!active) return "这个位置还没有核实过的替代路线。解除标记可恢复原路线。";
+    if (!block && selected === studio) {
+      const extra = active.distance_m - studioRoutes[0].distance_m;
+      return "当前经" + active.variant_label + "。" + (extra > 0 ? "两条路线到达同一门厅，这条多走 " + extra.toFixed(2) + " m。" : "这是两条已核路线中较短的一条。");
+    }
+    if (!block) return "当前显示两个已核门厅方案中较短的一条。";
+    const delta = active.distance_m - original.distance_m;
+    const change = (delta >= 0 ? "增加 " : "缩短 ") + Math.abs(delta).toFixed(2) + " m。";
+    if (selected === studio) return original.variant_label + "已标记，现经" + active.variant_label + "到同一门厅，路程" + change;
+    if (Math.abs(delta) < .001) return "原路线仍然可通行。";
+    return (active.local_detour ? "已从室内绕过所选位置，" : "已改走另一个门厅，") + "路程" + change;
+  }
+  function update() {
+    const isStudio = selected === studio;
+    for (const [id, b] of roomButtons) b.setAttribute("aria-pressed", String(id === selected.room_label));
+    $("discussion-actions").hidden = isStudio;
+    $("studio-actions").hidden = !isStudio;
+    $("floor-mode").textContent = block ? "标记后的模型步行距离" : (isStudio ? "当前方案 · 模型步行距离" : "较短方案 · 模型步行距离");
+    $("floor-distance").textContent = active ? lengthText(active) : "—";
+    $("floor-start").textContent = selected.room_label;
+    $("floor-end").textContent = endName(active);
+    $("floor-status").textContent = routeStatus();
+    $("floor-title").textContent = selected.room_label + " → " + endName(active);
+    $("floor-reset").hidden = !block;
+    $("floor-exit").hidden = !!block || !active;
+    $("floor-range-tools").hidden = !active;
+    $("floor-hint").textContent = "点彩色路线或出口，模拟该位置暂时不通。";
+    $("variant-hint").textContent = block ? "蓝线是当前路线。点图上的红叉或下方按钮可恢复。" : "点图上的黄色房门，比较换一樘房门后的走法。";
+    $("variant-toggle-door").hidden = !!block;
+    $("variant-reset").hidden = !block;
+    for (const [id, b] of doorButtons) {
+      b.disabled = isStudio && !!block && id === original.id;
+      b.setAttribute("aria-pressed", String(isStudio && active?.id === id));
+    }
+    $("floor").querySelector(".floor-key-line").style.background = block && active !== original ? colors.detour : colors.route;
+    updateStation();
+    draw();
+  }
+  function visible(x, y, frame, pad=0) {
+    return x >= -pad && x <= frame.width+pad && y >= -pad && y <= frame.height+pad;
+  }
+  function badge(layer, label, x, y, {fill="white", ink=colors.ink, border=ink, width=label.length*12+12}={}) {
+    layer.append(svgItem("rect", {x:x-width/2, y:y-10, width, height:20, rx:4, stroke:border, fill}),
+      svgItem("text", {x,y,fill:ink,"font-size":12,"font-weight":700,"text-anchor":"middle","dominant-baseline":"central","pointer-events":"none"}, label));
+  }
+  function roomBadge(layer, room, frame) {
+    const [x,y] = frame.project(room.origin_m);
+    if (!visible(x,y,frame)) return;
+    const side = room.room_label === "G041" ? -1 : 1;
+    const cx = Math.min(frame.width-26, Math.max(26, x+side*34));
+    const cy = Math.min(frame.height-18, Math.max(18, y+(room === studio ? -18 : -23)));
+    const g = svgItem("g", {"data-room-label":room.room_label,"aria-pressed":String(room === selected)});
+    g.append(svgItem("line",{x1:x,y1:y,x2:cx,y2:cy,stroke:colors.ink,"stroke-width":1.2}),
+      svgItem("circle",{cx:x,cy:y,r:4,fill:room === selected ? colors.route : colors.ink,stroke:"white","stroke-width":1.4}),
+      svgItem("rect",{x:cx-26,y:cy-18,width:52,height:36,fill:"transparent"}));
+    badge(g,room.room_label,cx,cy,{width:47,fill:room === selected ? colors.ink : "white",ink:room === selected ? "white" : colors.ink,border:colors.ink});
+    layer.append(clickable(g,"切换起点 "+room.room_label,()=>selectRoom(room.room_label)));
+  }
+  function terminal(layer, frame, color) {
+    const [x,y] = frame.project(active.xy_m.at(-1));
+    if (!visible(x,y,frame,10)) return;
+    const g=svgItem("g", {"data-map-exit":active.endpoint_id});
+    g.append(svgItem("rect",{x:x-13,y:y-13,width:26,height:26,fill:"transparent"}),
+      svgItem("rect",{x:x-6,y:y-6,width:12,height:12,fill:color,stroke:"white","stroke-width":2}));
+    if (selected !== studio) {
+      const label = endName(active), half = label.length*6+8;
+      const lx = Math.max(half+1,Math.min(frame.width-half-1,x));
+      badge(g,label,lx,y<28?y+20:y-19,{ink:color});
+      if (!block) clickable(g,"标记出口暂时不通："+label,blockExit);
+    }
+    layer.append(g);
+  }
+  function closureCross(layer, xy, frame, kind) {
+    const [x,y] = frame.project(xy);
+    const g = svgItem("g",{"data-closure":kind});
+    if (kind === "point") g.append(svgItem("circle",{cx:x,cy:y,r:walk.radius*frame.scale,fill:"#f5a38b","fill-opacity":.4,stroke:colors.stop}));
+    g.append(svgItem("circle",{cx:x,cy:y,r:8.5,fill:colors.stop,stroke:"white","stroke-width":1.5}),
+      svgItem("path",{d:"M "+(x-3)+" "+(y-3)+" l 6 6 m -6 0 l 6 -6",stroke:"white","stroke-width":2}));
+    layer.append(g);
+  }
+  function studioDoor(layer, r, frame, closed) {
+    const [x,y] = frame.project(r.room_door_xy_m);
+    if (!visible(x,y,frame,12)) return;
+    const control = closed || !block;
+    const color = closed ? colors.stop : (block ? colors.detour : colors.ink);
+    const g=svgItem("g",control ? {"data-room-door":r.id} : {"data-active-room-door":r.id});
+    const origin = frame.project(studio.origin_m);
+    const cx = Math.min(frame.width-26,Math.max(26,x+(x<origin[0]?-37:37)));
+    badge(g,r.variant_label,cx,y+(closed?14:-15),{ink:color,width:47});
+    g.append(svgItem("circle",{cx:x,cy:y,r:17,fill:"transparent"}));
+    if (closed) closureCross(g,r.room_door_xy_m,frame,"roomDoor");
+    else g.append(svgItem("circle",{cx:x,cy:y,r:block?6:8,stroke:color,"stroke-width":2,fill:block?color:"#e9b052"}));
+    if (control) clickable(g,closed?"解除房门标记":"模拟当前房门暂时不通",closed?restore:markDoor);
+    layer.append(g);
+  }
+  function drawRoute(layer, frame) {
+    if (block && original !== active) {
+      layer.append(svgItem("polyline",{points:pointList(original.xy_m,frame),stroke:"#687782","stroke-width":2.5,"stroke-dasharray":"5 5",fill:"none","pointer-events":"none"}));
+    }
+    if (active) {
+      const color = block && original !== active ? colors.detour : colors.route;
+      const attrs = {points:pointList(active.xy_m,frame),fill:"none","stroke-linecap":"round","stroke-linejoin":"round","pointer-events":"none"};
+      layer.append(svgItem("polyline",{...attrs,stroke:"white","stroke-width":7.5}),
+        svgItem("polyline",{...attrs,stroke:color,"stroke-width":4.3,"data-active-path":active.id || active.endpoint_id}));
+      if (selected !== studio) {
+        const hit = svgItem("polyline",{...attrs,stroke:"transparent","stroke-width":18,"pointer-events":"stroke","data-route-hit":"true",style:"cursor:crosshair"});
+        hit.addEventListener("click",e=>{
+          const rect = svg.getBoundingClientRect();
+          const xy = frame.unproject([e.clientX-rect.left,e.clientY-rect.top]);
+          mark({kind:"point",xy:walk.closest(xy,active.xy_m).xy});
+        });
+        layer.append(hit);
+      }
+      terminal(layer,frame,color);
+    }
+    if (selected === studio) {
+      studioDoor(layer,active,frame,false);
+      if (block) studioDoor(layer,original,frame,true);
+    } else if (block) closureCross(layer,block.xy,frame,block.kind);
+  }
+  function draw() {
+    const frame = camera.frame();
+    if (!frame.width || !frame.height || !original) return;
+    svg.setAttribute("viewBox",[0,0,frame.width,frame.height].join(" "));
+    const layer = camera.backdrop(frame);
+    for (const room of shapes) {
+      const polygon = svgItem("polygon",{points:pointList(room.polygon_m,frame),fill:room===selected?"#75baac":"#accdc6","fill-opacity":.52,
+        stroke:room===selected?colors.route:"#567c78","stroke-width":room===selected?2:1.5,"data-room-map":room.room_label,"aria-pressed":String(room===selected)});
+      layer.append(clickable(polygon,"选择房间 "+room.room_label,()=>selectRoom(room.room_label)));
+    }
+    drawRoute(layer,frame);
+    for (const room of shapes) roomBadge(layer,room,frame);
+    svg.replaceChildren(layer);
+    const m=[.5,1,2,5,10,20].filter(v=>v*frame.scale<=Math.min(95,frame.width*.23)).pop() || .5;
+    const bar=$("floor-scale");
+    bar.hidden=false;bar.style.width=m*frame.scale+"px";bar.textContent=m+" m";
+    $("floor-plus").disabled=!frame.canZoomIn;
+    $("floor-minus").disabled=!frame.canZoomOut;
+  }
+  for (const room of shapes) {
+    const b=document.createElement("button"), name=document.createElement("strong"), usage=document.createElement("small");
+    b.type="button";b.dataset.caseRoom=room.room_label;
+    name.textContent=room.room_label;usage.textContent=room===studio?studio.room_name:"讨论室";
+    b.append(name,usage);b.onclick=()=>selectRoom(room.room_label);
+    roomButtons.set(room.room_label,b);$("case-rooms").append(b);
+  }
+  for (const route of studioRoutes) {
+    const b=document.createElement("button");
+    b.type="button";b.textContent=route.variant_label;b.dataset.variant=route.id;
+    b.onclick=()=>{if (!block) {original=route;active=route;update();}};
+    doorButtons.set(route.id,b);$("variant-options").append(b);
+  }
+  // Some touch browsers suppress the next synthetic click after a pinch or drag.
+  // A stationary touch release activates the tool once; mouse and keyboard use click.
+  function cameraButton(id, action) {
+    const button = $(id);
+    let start = null, handledTouchAt = -Infinity;
+    button.addEventListener("pointerdown", event => {
+      handledTouchAt = -Infinity;
+      start = event.pointerType === "touch" && event.isPrimary ? [event.clientX,event.clientY] : null;
+    });
+    button.addEventListener("pointercancel", () => { start = null; });
+    button.addEventListener("pointerup", event => {
+      if (!start || event.pointerType !== "touch") return;
+      const distance = Math.hypot(event.clientX-start[0],event.clientY-start[1]);
+      start = null;
+      if (distance > 8 || !button.contains(document.elementFromPoint(event.clientX,event.clientY))) return;
+      handledTouchAt = performance.now();
+      action();
+    });
+    button.addEventListener("click", event => {
+      if (event.detail && performance.now() - handledTouchAt < 950) return;
+      action();
+    });
+  }
+  cameraButton("floor-plus",()=>camera.step(1.5));
+  cameraButton("floor-minus",()=>camera.step(1/1.5));
+  cameraButton("floor-fit",()=>camera.fit());
+  cameraButton("floor-focus",focusRoute);
+  $("floor-exit").onclick=blockExit;$("floor-reset").onclick=restore;
+  $("floor-range").oninput=updateStation;
+  $("floor-mark").onclick=()=>{if(active) mark({kind:"point",xy:walk.along(active.xy_m, Number($("floor-range").value)/100)});};
+  $("variant-toggle-door").onclick=markDoor;$("variant-reset").onclick=restore;
+  selectRoom(selected.room_label, false);
 })();
 </script></body></html>
